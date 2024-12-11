@@ -1,26 +1,20 @@
 <?php
-include_once('environnement.php');
+include_once('../environnement.php');
 
-$request = $bdd->query('SELECT *,users.username AS author,  creature.id AS creatureid
+$request = $bdd->query('SELECT *,users.username AS author,  creature.id AS creatureid, famille.nom_famille AS famille
                         FROM creature
-                        LEFT JOIN users ON users_id = users.id');
+                        LEFT JOIN users ON users_id = users.id
+                        LEFT JOIN famille ON famille_id = famille.id');
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
+<?php 
+    $title="Bestiaire";
+    include_once('../include/head.php');
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="icon" type="image/png" sizes="32x32" href="assets/image/livre-de-sortileges.png">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <title>Academie</title>
-</head>
+?>
 
 <body>
-    <?php include_once('nav.php'); ?>
+    <?php include_once('../include/nav.php'); ?>
     <main id="creature">
         <h1>Référencement du bestiaire</h1>
 
@@ -54,8 +48,9 @@ $request = $bdd->query('SELECT *,users.username AS author,  creature.id AS creat
                 ?>
                 <article>
                     <p class="auteur">Par : <strong><?= $creature['author']; ?></strong></p>
-                    <img src="assets/image/creatures/<?= $creature['image']; ?>" alt="image de <?= $creature['nom']; ?>">
+                    <img src="../assets/image/creatures/<?= $creature['image']; ?>" alt="image de <?= $creature['nom']; ?>">
                     <h3> <?= $creature['nom']; ?> </h3>
+                    <h3> famille :<?= $creature['famille']; ?> </h3>
                     <p> <?= $creature['description']; ?> </p>
                     <!-- ON VERIFIE SI LA VARIABLE DE SESSION EXISTE-->
                     <?php if (isset($_SESSION['userId'])) : ?>

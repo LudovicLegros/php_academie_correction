@@ -1,5 +1,5 @@
 <?php
-include('environnement.php');
+include('../environnement.php');
 
 $id = htmlspecialchars($_GET['id']);
 //REQUETE POUR VERIFICATION DU USER A QUI APPARTIENT L'ARTICLE

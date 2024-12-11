@@ -1,5 +1,5 @@
 <?php
-include('environnement.php');
+include('../environnement.php');
 
 $id = htmlspecialchars($_GET['id']);
 //REQUETE POUR VERIFICATION DU USER A QUI APPARTIENT L'ARTICLE
@@ -14,7 +14,7 @@ while ($data = $requestSelect->fetch()) {
                           WHERE id=?');
 
         $request->execute([$id]);
-        header('Location: magie.php?success=3');
+        header('Location: /perigueux_php_academie/magie/magie.php?success=3');
         exit();
     } else {
         //SINON ON RENVOIE SUR L'INDEX

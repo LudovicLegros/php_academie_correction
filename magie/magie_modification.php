@@ -1,5 +1,5 @@
 <?php
-include_once('environnement.php');
+include_once('../environnement.php');
 
 //REQUETE SELECT POUR REMPLISSAGE AUTO
 $articleId = $_GET['id'];
@@ -57,6 +57,10 @@ if (isset($_POST['name']) && isset($_POST['description']) && isset($_POST['ecole
 
 ?>
 
+<?php 
+$title = "modification de créature";
+include_once('../include/head.php')
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -70,7 +74,7 @@ if (isset($_POST['name']) && isset($_POST['description']) && isset($_POST['ecole
 </head>
 
 <body>
-    <?php include_once('nav.php'); ?>
+    <?php include_once('../include/nav.php'); ?>
     <main>
         <h1>Modification du sort <?= $values[0]['label'] ?></h1>
 

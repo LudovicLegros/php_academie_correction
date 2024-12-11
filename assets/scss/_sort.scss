@@ -1,7 +1,7 @@
 #magie{
     article{
         display:flex;
-        justify-content: flex-start;
+        justify-content: space-around;
         height: 100px;
         width: 45vw;
         
@@ -17,10 +17,15 @@
             flex-direction: column;
             justify-content: space-between;
         }
+
+        >div:first-of-type{
+            width: 60%;
+        }
     }
 
     .btn_box{
         margin-left: auto;
+        height: 100%;
     }
 
 }

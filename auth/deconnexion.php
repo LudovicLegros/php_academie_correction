@@ -2,4 +2,4 @@
 session_start();
 session_unset();
 session_destroy();
-header('Location:index.php?deconnexionsuccess=1');
+header('Location:../index.php?deconnexionsuccess=1');

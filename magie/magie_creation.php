@@ -1,16 +1,18 @@
 <?php
-include_once('environnement.php');
+include_once('../environnement.php');
 
 if (!isset($_SESSION['userName'])) {
     header('Location:index.php');
 }
+//REQUETE POUR LA RECUPERATION DES TYPES DE MAGIES POUR LE CHAMP SELECT/OPTION
+$request = $bdd->query('SELECT *
+                        FROM ecole');
 
-if (isset($_POST['name']) && isset($_POST['description'])) {
+
+if (isset($_POST['name']) && isset($_POST['description']) && isset($_POST['ecole'])) {
     $name = htmlspecialchars($_POST['name']);
     $description = htmlspecialchars($_POST['description']);
-    $caracsChckBox = $_POST['caracs']; //ARRAY DES CHOIX DE CHECKBOX
-    var_dump($caracsChckBox);
-
+    $ecole = htmlspecialchars($_POST['ecole']);
 
     if (isset($_FILES['image'])) {
         // NOM DU FICHIER IMAGE
@@ -22,27 +24,21 @@ if (isset($_POST['name']) && isset($_POST['description'])) {
         //GENERATION D'UN NOM DE FICHIER UNIQUE
         $uniqueName = $imageName . time() . rand(1, 1000) . "." . $extImage;
 
-        move_uploaded_file($imageTmp, 'assets/image/creatures/' . $uniqueName);
+        move_uploaded_file($imageTmp, 'assets/image/sorts/' . $uniqueName);
     }
 
-    $request = $bdd->prepare('INSERT INTO creature(nom,description,image,users_id)
+    $request = $bdd->prepare('INSERT INTO magie(label,description,image,ecole_id)
                               VALUES(?,?,?,?)');
 
-    $request->execute(array($name, $description, $uniqueName, $_SESSION['userId']));
-
-    $last_insert_id = $bdd->lastInsertId();
-
-    $requestCaracs = $bdd->prepare('INSERT INTO creature_caracteristique(creature_id,caracteristique_id)
-    VALUES(?,?)');
-
-    foreach ($caracsChckBox as $caracs) {
-        $requestCaracs->execute(array($last_insert_id, $caracs));
-    }
-    // header('Location: bestiaire.php?success=1');
-    // foreach($caracs as $caracsChckBox)
+    $request->execute(array($name, $description, $uniqueName, $ecole));
+    header('Location: magie.php?success=1');
 }
 ?>
 
+<?php 
+$title = "Création de créature";
+include_once('../include/head.php');
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -56,29 +52,27 @@ if (isset($_POST['name']) && isset($_POST['description'])) {
 </head>
 
 <body>
-    <?php include_once('nav.php'); ?>
+    <?php include_once('../include/nav.php'); ?>
     <main>
-        <h1>Création de la créature</h1>
+        <h1>Création d'un sort magique'</h1>
 
         <!--Formulaire de Création-->
-        <form action="creature_creation.php" method="POST" enctype="multipart/form-data">
-            <label for="name">Le nom de la créature:</label>
+        <form action="magie_creation.php" method="POST" enctype="multipart/form-data">
+            <label for="name">Le nom du sort:</label>
             <input type="text" id="name" name="name">
 
             <label for="image">Ajouter une image:</label>
             <input type="file" id="image" name="image">
 
-            <label for="description">La description de la créature:</label>
+            <label for="description">La description du sort:</label>
             <textarea name="description" id="description" cols=" 30" rows="10"></textarea>
 
-            <!-- AJOUT CHECKBOX -->
-            <label>La caractéristique:</label>
-            <label for="vol">Vol</label>
-            <input type='checkbox' name='caracs[]' value='1' id='vol'>
-            <label for="court">Court</label>
-            <input type='checkbox' name='caracs[]' value='2' id='court'>
-            <label for="nage">Nage</label>
-            <input type='checkbox' name='caracs[]' value='3' id='nage'>
+            <label for="ecole">Selectionner son école de magie:</label>
+            <select name="ecole" id="ecole">
+                <?php while ($ecole = $request->fetch()) : ?>
+                    <option value="<?= $ecole['id'] ?>"><?= $ecole['type'] ?></option>
+                <?php endwhile ?>
+            </select>
             <button>Ajouter</button>
         </form>
     </main>
