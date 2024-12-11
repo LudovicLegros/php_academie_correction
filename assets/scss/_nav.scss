@@ -1,0 +1,30 @@
+nav{
+    background-color: #070606;
+    padding:1em;
+    border-bottom:1px solid rgb(55, 43, 43);
+    /* box-shadow:0px 5px 10px #413F54; */
+
+    ul{
+        display:flex;
+    }
+    
+    li{
+        margin-right:1em;
+
+        &:nth-child(4){
+            margin-left:auto;
+        }
+    }
+    
+    
+    a{
+        color:white;
+        font-weight: 900;
+        transition:all 0.3s ease-in-out;
+
+        &:hover{
+            color:$beige;
+        }
+    }
+}
+

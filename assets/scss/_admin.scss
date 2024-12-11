@@ -1,0 +1,49 @@
+#admin{
+    article{
+        display:flex;
+        padding: 10px;
+        justify-content: space-between;
+
+        p{
+            margin-right: 3em;
+
+            &:nth-child(1){
+                width: 50px;
+            }
+
+            &:nth-child(2){
+                width: 75px;
+                margin-left: 10px;
+            }
+
+            &:nth-child(3){
+                width: 60%;
+            }
+        }
+
+        div{
+            margin-left: auto;
+        }
+
+        a{
+            margin-right: 1em;
+        }
+    }
+
+    img{
+        height: 50px;
+        width: 50px;
+    }
+}
+
+.admin_nav ul{
+    justify-content: center;
+
+    li:nth-child(4){
+        margin-left:0;
+  
+    }
+}
+
+
+

@@ -1,0 +1,38 @@
+#magie{
+    article{
+        display:flex;
+        justify-content: flex-start;
+        height: 100px;
+        width: 45vw;
+        
+        img{
+            height: 100px;
+            width: 100px;
+            object-fit: contain;
+            margin-right: 2em;
+        }
+
+        div{
+            display:flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+    }
+
+    .btn_box{
+        margin-left: auto;
+    }
+
+}
+
+.lumiere{
+    box-shadow: 0px 0px 5px yellow;
+}
+
+.feu{
+    box-shadow: 0px 0px 5px red;
+}
+
+.eau{
+    box-shadow: 0px 0px 5px blue;
+}

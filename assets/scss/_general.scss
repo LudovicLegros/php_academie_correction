@@ -1,0 +1,95 @@
+*{
+    margin:0px;
+    padding:0px;
+    list-style: none;
+    text-decoration: none;
+}
+
+body{
+    font-family: calibri;
+    background-color: #706C61;
+    background-image: url('../image/texture.jpg');
+    background-size:300px;
+    color:#aaa;
+    text-shadow: 3px 3px 1px $noir;
+}
+
+h1,h2,h3{
+    font-family:"Old Fenris";
+    margin-bottom:1em;
+    color:$beige;
+    text-shadow: 3px 3px $noir;
+    font-weight: 200;
+}
+
+img{
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+}
+
+main {
+    padding: 2em;
+}
+
+article {
+    padding:2em;
+    margin-bottom: 2em;
+    backdrop-filter: blur(1px);
+    border: 1px solid rgb(118, 116, 116, 0.5);
+    position:relative;
+}
+
+#creature_list{
+    display:flex;
+    justify-content: space-around;
+    flex-wrap:wrap;
+}
+
+#creature_list article{
+    width: 200px;
+}
+
+/* --------------------------- */
+
+.error {
+    color: red;
+    font-weight: bold;
+}
+
+/* ------BUTTONS----- */
+
+.btn,button {
+    color:$beige;
+    padding:4px 7px;
+    background: linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(116,29,29,1) 50%, rgba(0,0,0,1) 100%);;
+    border:3px ridge $beige;
+    border-radius: 3px;
+    display:inline-block;
+    text-shadow: 0px 0px 0px;
+    transition:all 0.5s ease-in-out;
+
+    &:hover{
+        opacity:0.7;
+    }
+}
+
+
+
+.btn-add{
+    margin-bottom: 2em;
+    font-size: 18px;
+}
+
+
+/* ------MESSAGES----- */
+
+.success{
+    color:green;
+    text-align: center;
+}
+
+.error{
+    color:red;
+    text-align: center;
+}
