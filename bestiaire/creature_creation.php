@@ -29,17 +29,8 @@ if (isset($_POST['name']) && isset($_POST['description']) && isset($_POST['famil
                               VALUES(?,?,?,?,?)');
 
     $request->execute(array($name, $description, $uniqueName,$famille, $_SESSION['userId']));
+    header('location:bestiaire.php?success=1');
 
-    // $last_insert_id = $bdd->lastInsertId();
-
-
-
-    
-    // foreach ($caracsChckBox as $caracs) {
-    //     $requestCaracs->execute(array($last_insert_id, $caracs));
-    // }
-    // header('Location: bestiaire.php?success=1');
-    // foreach($caracs as $caracsChckBox)
 }
 
     $requestOptions = $bdd->prepare('SELECT id, nom_famille 

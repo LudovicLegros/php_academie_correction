@@ -1,11 +1,19 @@
 <?php
 include_once('../environnement.php');
 
-if (!isset($_SESSION['userName'])) {
-    header('Location:index.php');
+
+
+if (isset($_SESSION['userName'])) {
+    $innerRequest= $bdd->prepare('SELECT u.username AS specialiste,e.type AS type,u.id AS uid, e.id AS eid
+    FROM `users` AS u
+    INNER JOIN user_ecole AS ue ON ue.user_id = u.id 
+    INNER JOIN ecole AS e ON ue.ecole_id = e.id
+    WHERE u.username = :username');
+
+    $innerRequest->execute(['username' => $_SESSION['userName']]);
 }
 //REQUETE POUR LA RECUPERATION DES TYPES DE MAGIES POUR LE CHAMP SELECT/OPTION
-$request = $bdd->query('SELECT *
+$requestType = $bdd->query('SELECT *
                         FROM ecole');
 
 
@@ -24,7 +32,7 @@ if (isset($_POST['name']) && isset($_POST['description']) && isset($_POST['ecole
         //GENERATION D'UN NOM DE FICHIER UNIQUE
         $uniqueName = $imageName . time() . rand(1, 1000) . "." . $extImage;
 
-        move_uploaded_file($imageTmp, 'assets/image/sorts/' . $uniqueName);
+        move_uploaded_file($imageTmp, '../assets/image/sorts/' . $uniqueName);
     }
 
     $request = $bdd->prepare('INSERT INTO magie(label,description,image,ecole_id)
@@ -68,11 +76,20 @@ include_once('../include/head.php');
             <textarea name="description" id="description" cols=" 30" rows="10"></textarea>
 
             <label for="ecole">Selectionner son école de magie:</label>
-            <select name="ecole" id="ecole">
-                <?php while ($ecole = $request->fetch()) : ?>
-                    <option value="<?= $ecole['id'] ?>"><?= $ecole['type'] ?></option>
-                <?php endwhile ?>
-            </select>
+            
+                
+
+                <select name="ecole" id="ecole">
+                        <!--BOUCLE DE RECUPERATION DES TYPES-->
+                        <?php while ($ecole = $requestType->fetch()) : ?>
+                            <option value="<?= $ecole['id'] ?>">
+                                <?= $ecole['type'] ?>
+                          
+                            </option>
+                        <?php endwhile ?>
+                </select>
+                
+            
             <button>Ajouter</button>
         </form>
     </main>

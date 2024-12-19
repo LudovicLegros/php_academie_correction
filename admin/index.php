@@ -8,6 +8,8 @@ if ($_SESSION['role'] != 'ADMIN') {
 $request = $bdd->query('SELECT *
                         FROM users');
 
+
+
 ?>
 
 
@@ -27,10 +29,44 @@ $request = $bdd->query('SELECT *
 <body>
     <?php include_once('nav.php'); ?>
     <main id='admin'>
+        <?php 
+        if (isset($_GET['success'])) {
+                $success = $_GET['success'];
+                switch ($success) {
+                    case 1:
+                        echo "<p class='success'>l'utilisateur à bien été modifé</p>";
+                        break;
+                    case 2:
+                        echo "<p class='success'>Votre créature a bien été modifié </p>";
+                        break;
+                    case 3:
+                        echo "<p class='success'>Votre créature a bien été supprimé</p>";
+                        break;
+                }
+            }
+        ?>
         <?php while ($user = $request->fetch()) : ?>
             <article>
                 <p><?= $user['username'] ?></p>
                 <p><?= $user['role'] ?></p>
+                <p>
+                    <?php 
+                        $requestType = $bdd->prepare('SELECT e.type
+                                                    FROM ecole AS e
+                                                    LEFT JOIN user_ecole AS ue
+                                                    ON ue.ecole_id = e.id
+                                                    WHERE ue.user_id = :uid');
+
+                        $requestType->execute(['uid'=>$user['id']]);
+
+                        while($type = $requestType->fetch()){
+                            echo '<span> ' . $type['type'] . '</span>';
+
+                        }
+
+                    ?>
+
+                </p>
                 <div>
                     <a href="usermodify.php?id=<?= $user['id'] ?>" class='btn'><i class="fa-solid fa-pen"></i></a>
                     <a href="userdelete.php?id=<?= $user['id'] ?>" class='btn'><i class="fa-solid fa-trash-can"></i></a>

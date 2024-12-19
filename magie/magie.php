@@ -1,6 +1,6 @@
 <?php
 include_once('../environnement.php');
-
+// Requête SQL pour afficher la liste des sorts 
 $request = $bdd->query('SELECT *,magie.id AS magieId
                         FROM magie
                         INNER JOIN ecole ON ecole_id = ecole.id
@@ -41,7 +41,7 @@ include('../include/head.php')
                     <h3><?= $magie['label']; ?></h3>
                     <p><?= $magie['description']; ?></p>
                     <p><strong>type: </strong><?= $magie['type']; ?></p>
-
+                    <!-- Lancement d'une requête pour afficher les resultats entre la table many to many users et ecole -->
                     <?php 
                         $innerRequest= $bdd->prepare('SELECT u.username AS specialiste,e.type,u.id AS uid 
                                                         FROM `users` AS u
@@ -49,11 +49,12 @@ include('../include/head.php')
                                                         INNER JOIN ecole AS e ON ue.ecole_id = e.id
                                                         WHERE ue.ecole_id = :ecoleid');
 
-                        $innerRequest->execute([':ecoleid' => $magie['id']]);
+                        $innerRequest->execute(['ecoleid' => $magie['id']]);
 
                     ?>
                     <p><strong>spécialistes:
                         <?php 
+                        // Création d'un tableau, on va stocker a chaque tour de boucle le resultat de la requete
                         $listOfSpecialiste=[];
                         while($specialiste = $innerRequest->fetch()){
                             echo $specialiste['specialiste'] . " ";   
@@ -64,7 +65,8 @@ include('../include/head.php')
                     </p>
                 </div>
                 <?php if (isset($_SESSION['userId'])) : ?>
-                    <?php if (in_array(($_SESSION['userId']),$listOfSpecialiste)) : ?>
+                    <!-- On verifie si l'utilisateur fait partie du tableau précédemment remplis pour autoriser l'affichage des boutons -->
+                    <?php if (in_array(($_SESSION['userId']),$listOfSpecialiste) || $_SESSION['role']== 'ADMIN') : ?>
                     <div class='btn_box'>
                         <a class="btn btn-modif" href="<?= 'magie_modification.php?id=' . $magie['magieId']; ?>">modifier</a>
                         <a class="btn btn-suppr" href="<?= 'magie_suppression.php?id=' . $magie['magieId']; ?>">supprimer</a>

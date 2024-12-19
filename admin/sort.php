@@ -35,8 +35,8 @@ $request = $bdd->query('SELECT *,magie.id AS magieId
                 <p><?= $magie['description'] ?></p>
                 <p><?= $magie['type'] ?></p>
                 <div>
-                    <a href="../magie_modification.php?id=<?= $magie['magieId'] ?>" class='btn'><i class="fa-solid fa-pen"></i></a>
-                    <a href="../magie_suppression.php?id=<?= $magie['magieId'] ?>" class='btn'><i class="fa-solid fa-trash-can"></i></a>
+                    <a href="../magie/magie_modification.php?id=<?= $magie['magieId'] ?>" class='btn'><i class="fa-solid fa-pen"></i></a>
+                    <a href="../magie/magie_suppression.php?id=<?= $magie['magieId'] ?>" class='btn'><i class="fa-solid fa-trash-can"></i></a>
                 </div>
             </article>
         <?php endwhile ?>

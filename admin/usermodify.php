@@ -1,19 +1,30 @@
 <?php
 include_once('../environnement.php');
 
+//REQUEST POUR RECUPERE LES TYPE POUR LA BOUCLE DU CHAMP SELECT
+$requestType = $bdd->query('SELECT *
+                        FROM ecole
+                        ');
+
 //REQUETE SELECT POUR REMPLISSAGE AUTO
-$articleId = $_GET['id'];
+$userId = $_GET['id'];
 
-$rqSelect = $bdd->prepare('SELECT *
-                             FROM users
-                             WHERE id = ?');
-$rqSelect->execute(array($articleId));
-//FETCH ALL RECUPERE D'UN COUP TOUTE LES RANGEES DE LA BDD DANS UN TABLEAU A 2 DIMENSIONS
-$values = $rqSelect->fetchAll();
+$rqSelect = $bdd->prepare('SELECT u.username, GROUP_CONCAT(ue.ecole_id) AS element
+                             FROM users AS u
+                             LEFT JOIN user_ecole AS ue
+                             ON u.id = ue.user_id
+                             WHERE u.id = ?');
+$rqSelect->execute(array($userId));
 
-//FOREACH PERMET DE BOUCLER SUR LE TABLEAU PRECEDEMMENT CREE
-foreach ($values as $value) :
-    //ON VERIFIE SI LE USER EST LE CREATION OU SI C'EST L'ADMIN
+// FETCH RECUPERE D'UN COUP TOUTE LA RANGEE DE LA REQUETE
+$value = $rqSelect->fetch();
+if($value['element'] != NULL){
+    $element = explode(",",$value['element']);
+}else{
+    $element = [];
+}
+
+    //ON VERIFIE SI LE USER EST L'ADMIN
     if ($_SESSION['role'] == 'ADMIN') {
         if (isset($_POST['role'])) {
             $role = htmlspecialchars($_POST['role']);
@@ -21,17 +32,44 @@ foreach ($values as $value) :
             $request = $bdd->prepare('UPDATE users
                                 SET role = :role
                                 WHERE id = :id');
-
             $request->execute(array(
                 'role'           => $role,
-                'id'            => $articleId
+                'id'            => $userId
             ));
-            header('Location: index.php?success=2');
+
+            // POUR MODIFIER UNE TABLE MANY TO MANY IL FAUT SUPPRIMER LES VALEURS ASSOCIEE ET LES REINSERER
+
+            //FAIRE REQUETE DELETE
+
+            $requestDelete = $bdd->prepare('DELETE FROM user_ecole
+                                      WHERE user_id = :id');
+            $requestDelete->execute(array(
+            'id'            => $userId
+            ));
+
+            //FAIRE REQUETE INSERT INTO
+           
+            if(isset($_POST['element'])){
+                $requestReinsert = $bdd->prepare('INSERT INTO user_ecole(user_id,ecole_id)
+                                                VALUES (:userid,:ecoleid)
+                                                ');
+
+                                        
+                foreach($_POST['element'] as $checkboxElement){
+                    $requestReinsert->execute(array(
+                    'userid'            => $userId,
+                    'ecoleid'           => $checkboxElement
+
+                    ));
+                }
+
+                header('Location: /perigueux_php_academie/admin/index.php?success=1');
+            }
         }
     } else {
         header('Location: index.php');
     }
-endforeach;
+
 
 ?>
 
@@ -53,19 +91,38 @@ endforeach;
     include_once('nav.php');
     ?>
     <main>
-        <h1>Définir le rôle de <?= $values[0]['username'] ?></h1>
+        <h1>Définir le rôle de <?= $value['username'] ?></h1>
 
         <!--Formulaire de modification-->
-        <form action="usermodify.php<?= '?id=' . $articleId ?>" method="POST">
+        <form action="usermodify.php<?= '?id=' . $userId ?>" method="POST">
 
             <!--ON FAIT UN FOREACH PLUTOT QU'UN WHILE CAR LES DONNEES SONT RECUPEREES EN FETCHALL()-->
-            <?php foreach ($values as $value) : ?>
+             <?php 
+            //  foreach ($values as $value) : 
+             ?> 
+                <label for="nom">Modifier le nom:</label>
+                <input type="text" value="<?= $value['username'] ?>">
+
                 <label for="role">Modifier le rôle :</label>
                 <select name="role" id="role">
                     <option value="USER">role USER</option>
                     <option value="ADMIN">role ADMIN</option>
                 </select>
-            <?php endforeach; ?>
+                
+                <?php while($type=$requestType->fetch()):?>
+                <label for="<?= $type['type']?>"><?= $type['type']?></label>
+                <input id="<?= $type['type']?>" type="checkbox" name="element[]" value="<?= $type['id']?>" 
+                <?php
+                 if(in_array( $type['id'],$element)) {
+                    echo "checked";
+                 }
+                
+                ?>
+                >
+                <?php endwhile; ?>
+             <?php 
+            // endforeach; 
+            ?> 
             <button>Modifier</button>
         </form>
     </main>

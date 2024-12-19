@@ -1,6 +1,14 @@
 <?php
 include_once('../environnement.php');
 
+
+
+//REQUETE POUR LE CHAMP SELECT
+$requestOptions = $bdd->prepare('SELECT id, nom_famille 
+FROM famille');
+
+$requestOptions->execute([]);
+
 //REQUETE SELECT POUR REMPLISSAGE AUTO
 $articleId = $_GET['id'];
 
@@ -60,6 +68,17 @@ include_once('../include/head.php');
 
                 <label for="description">Modifier la description :</label>
                 <textarea name="description" id="description" cols=" 30" rows="10"><?= $value['description'] ?></textarea>
+
+                <select name="famille" id="famille">
+                <?php while($data = $requestOptions->fetch()): ?>
+                    <option value="<?php echo $data['id'];?>"
+                    <?php
+                    if($data['id'] == $value['famille_id']){
+                        echo " selected";
+                    }
+                    ?>><?php echo $data['nom_famille']; ?></option>
+                <?php endwhile; ?>
+            </select>
             <?php endforeach; ?>
             <button>Modifier</button>
         </form>

@@ -2,7 +2,7 @@
 include_once('../environnement.php');
 
 //REQUETE SELECT POUR REMPLISSAGE AUTO
-$articleId = $_GET['id'];
+$articleId = htmlspecialchars($_GET['id']);
 
 $requestType = $bdd->query('SELECT *
                         FROM ecole');
@@ -36,8 +36,8 @@ if (isset($_POST['name']) && isset($_POST['description']) && isset($_POST['ecole
         $imageName = $infoImage['filename']; //NOM DU FICHIER SANS L'EXTENSION
         //GENERATION D'UN NOM DE FICHIER UNIQUE
         $uniqueName = $imageName . time() . rand(1, 1000) . "." . $extImage;
-
-        move_uploaded_file($imageTmp, 'assets/image/sorts/' . $uniqueName);
+        unlink('../assets/image/sorts/' . $value['image']);
+        move_uploaded_file($imageTmp, '../assets/image/sorts/' . $uniqueName);
     }
 
 
@@ -97,11 +97,17 @@ include_once('../include/head.php')
                     <select name="ecole" id="ecole">
                         <!--BOUCLE DE RECUPERATION DES TYPES-->
                         <?php while ($ecole = $requestType->fetch()) : ?>
-                            <option value="<?= $ecole['id'] ?>"><?= $ecole['type'] ?></option>
+                            <option value="<?= $ecole['id'] ?>"   
+                            <?php
+                            if($ecole['id'] == $value['ecole_id']){
+                                echo " selected";
+                            }
+                            ?>><?= $ecole['type'] ?>
+                          
+                            </option>
                         <?php endwhile ?>
                     </select>
-                    <button>Ajouter</button>
-                </form>
+               
     </main>
 <?php endforeach; ?>
 <button>Modifier</button>

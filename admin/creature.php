@@ -34,8 +34,8 @@ $request = $bdd->query('SELECT *,users.username AS author,  creature.id AS creat
                 <p><?= $user['description'] ?></p>
                 <p><?= $user['author'] ?></p>
                 <div>
-                    <a href="../creature_modification.php?admin=1&id=<?= $user['creatureid'] ?>" class='btn'><i class="fa-solid fa-pen"></i></a>
-                    <a href="../creature_suppression.php?id=<?= $user['creatureid'] ?>" class='btn'><i class="fa-solid fa-trash-can"></i></a>
+                    <a href="../bestiaire/creature_modification.php?admin=1&id=<?= $user['creatureid'] ?>" class='btn'><i class="fa-solid fa-pen"></i></a>
+                    <a href="../bestiaire/creature_suppression.php?id=<?= $user['creatureid'] ?>" class='btn'><i class="fa-solid fa-trash-can"></i></a>
                 </div>
             </article>
         <?php endwhile ?>

@@ -27,13 +27,13 @@ $request = $bdd->query('SELECT *,users.username AS author,  creature.id AS creat
             $success = $_GET['success'];
             switch ($success) {
                 case 1:
-                    echo "<p class='success'>Votre créature a bien été ajouté </p>";
+                    echo "<p class='success'>Votre créature à bien été ajouté </p>";
                     break;
                 case 2:
-                    echo "<p class='success'>Votre créature a bien été modifié </p>";
+                    echo "<p class='success'>Votre créature à bien été modifié </p>";
                     break;
                 case 3:
-                    echo "<p class='success'>Votre créature a bien été supprimé</p>";
+                    echo "<p class='success'>Votre créature à bien été supprimé</p>";
                     break;
             }
         }
