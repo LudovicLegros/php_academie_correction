@@ -1,10 +1,40 @@
 <?php
 include_once('../environnement.php');
 
-$request = $bdd->query('SELECT *,users.username AS author,  creature.id AS creatureid, famille.nom_famille AS famille
+//REQUETE POUR LES FAMILLES DU MENU DEROULANT DE FILTRE
+$requestFamille = $bdd->query('SELECT *
+                        FROM famille');
+
+
+
+// REQUETE DE BASE POUR L'AFFICHAGE
+//CONDITION POUR VERIFIER SI LE GET DU FILTRE EXISTE
+
+$where = '';
+if (!empty($_GET['famille'])) {
+    $famille = htmlspecialchars($_GET['famille']);
+    $where = 'WHERE (:famille IS NULL OR famille.id = :famille)';
+}
+
+
+$ordre = (isset($_GET['ordre']) && $_GET['ordre'] == 2) ? ' ASC' : ' DESC';
+
+//ON STOCKE LA REQUETE SQL DANS UNE VARIABLE ET ON VA POUVOIR LA DECONSTRUIRE ET LA MANIPULER POUR LES FILTRE
+$sql = 'SELECT *,users.username AS author,  creature.id AS creatureid, famille.nom_famille AS famille
                         FROM creature
                         LEFT JOIN users ON users_id = users.id
-                        LEFT JOIN famille ON famille_id = famille.id');
+                        LEFT JOIN famille ON famille_id = famille.id
+                        ' . $where . 'ORDER BY nom' . $ordre;
+
+$request = $bdd->prepare($sql);
+//ON EXCECUTE EN FONCTION DE L'EXISTANCE DU FILTRE OU PAS
+
+$params = [];
+if (!empty($_GET['famille'])) {
+    $params['famille'] = $_GET['famille'];
+}
+$request->execute($params);
+
 ?>
 
 <?php 
@@ -40,6 +70,23 @@ $request = $bdd->query('SELECT *,users.username AS author,  creature.id AS creat
         ?>
 
         <h2>Liste des créatures :</h2>
+        <!-- SECTION FILTRES -->
+        <form action="bestiaire.php" method="get">
+            <label for="famille">selectionner par famille :</label>
+            <select name="famille" id="famille">
+                <option value=""></option>
+                <?php while($famille = $requestFamille->fetch()): ?>
+                    <option value="<?= $famille['id'] ?>"><?= $famille['nom_famille'] ?></option>
+                <?php endwhile ?>
+            </select>
+            <label for="ordre">ordre</label>
+            <select name="ordre" id="ordre">
+                <option value="2">v</option>
+                <option value="1">^</option>
+            </select>
+            <button>filtrer</button>
+        </form>
+
         <section id="creature_list">
             <!-- BOUCLE POUR RECUPERATION DE LA REQUETE -->
             <?php while ($creature = $request->fetch()) : ?>

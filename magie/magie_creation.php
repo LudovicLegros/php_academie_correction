@@ -2,7 +2,7 @@
 include_once('../environnement.php');
 
 
-
+//REQUETE POUR SPEFICIER LES TYPE D'ELEMENT
 if (isset($_SESSION['userName'])) {
     $innerRequest= $bdd->prepare('SELECT u.username AS specialiste,e.type AS type,u.id AS uid, e.id AS eid
     FROM `users` AS u
@@ -81,8 +81,10 @@ include_once('../include/head.php');
 
                 <select name="ecole" id="ecole">
                         <!--BOUCLE DE RECUPERATION DES TYPES-->
-                        <?php while ($ecole = $requestType->fetch()) : ?>
-                            <option value="<?= $ecole['id'] ?>">
+                        
+                         <?php while ($ecole = $innerRequest->fetch()) : ?>
+                            
+                            <option value="<?= $ecole['eid'] ?>">
                                 <?= $ecole['type'] ?>
                           
                             </option>

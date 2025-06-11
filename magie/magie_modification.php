@@ -3,9 +3,30 @@ include_once('../environnement.php');
 
 //REQUETE SELECT POUR REMPLISSAGE AUTO
 $articleId = htmlspecialchars($_GET['id']);
+if ($_SESSION['role'] != 'ADMIN'){
+    $checkUser = 'WHERE user_id = ?';
+    $array = [$_SESSION['userId']];
+}else{
+    $checkUser = '';
+    $array = [];
+}
 
-$requestType = $bdd->query('SELECT *
-                        FROM ecole');
+$requestType = $bdd->prepare('SELECT *
+                        FROM ecole as e
+                        LEFT JOIN user_ecole as ue
+                        ON ue.ecole_id = e.id ' . $checkUser . 
+                        'GROUP BY e.type');
+
+$requestType->execute($array);
+
+$associedElements = $requestType->fetchAll();
+$numberOfCurrent = 0;
+
+
+
+
+// var_dump($associedElements);
+
 
 $rqSelect = $bdd->prepare('SELECT *
                              FROM magie
@@ -14,7 +35,23 @@ $rqSelect->execute(array($articleId));
 //FETCH ALL RECUPERE D'UN COUP TOUTE LES RANGEES DE LA BDD DANS UN TABLEAU A 2 DIMENSIONS
 $values = $rqSelect->fetchAll();
 
+    //ON VERIFIE LE NOMBRE DE CORRESPONDANCE QUE L'UTILISATEUR ACTUEL POSSEDE
+    foreach($associedElements as $associedElement){
+        if($associedElement['ecole_id'] == $values[0]['ecole_id']){
+            $numberOfCurrent += 1;
+        }
+    }
+
+    //SI L'UTILISATEUR N'A AUCUN ELEMENT ASSOCIE A CETTE PAGE IL EST REDIRIGE
+    if($_SESSION['role']!='ADMIN' ){
+            if (!isset($_SESSION['userId']) || $numberOfCurrent == 0 ) {
+            header('Location: /perigueux_php_academie/magie/magie.php');
+        }
+    }
+   
+
 //FOREACH PERMET DE BOUCLER SUR LE TABLEAU PRECEDEMMENT CREE
+// var_dump($values);
 foreach ($values as $value) :
     if (!isset($_SESSION['userId'])) {
         header('Location: index.php');
@@ -96,16 +133,22 @@ include_once('../include/head.php')
                     <label for="ecole">Selectionner son école de magie:</label>
                     <select name="ecole" id="ecole">
                         <!--BOUCLE DE RECUPERATION DES TYPES-->
-                        <?php while ($ecole = $requestType->fetch()) : ?>
-                            <option value="<?= $ecole['id'] ?>"   
-                            <?php
-                            if($ecole['id'] == $value['ecole_id']){
-                                echo " selected";
-                            }
-                            ?>><?= $ecole['type'] ?>
-                          
-                            </option>
-                        <?php endwhile ?>
+                  
+                        
+                      
+                            <?php foreach ($associedElements as $ecole) : ?>
+                                <option value="<?= $ecole['id'] ?>"   
+                                <?php
+                                if($ecole['ecole_id'] == $value['ecole_id']){
+                                    echo " selected";
+                                }
+                                ?>><?= $ecole['type']; ?>
+                            
+                                </option>
+                            <?php endforeach ?>
+                   
+               
+    
                     </select>
                
     </main>

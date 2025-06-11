@@ -18,7 +18,7 @@ while ($data = $requestSelect->fetch()) {
         exit();
     } else {
         //SINON ON RENVOIE SUR L'INDEX
-        header('Location: index.php');
+        header('Location: '. BASE_URL .'/index.php');
         exit();
     }
 }

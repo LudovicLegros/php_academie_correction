@@ -39,7 +39,7 @@ foreach ($values as $value) :
             header('Location: bestiaire.php?success=2');
         }
     } else {
-        header('Location: index.php');
+        header('Location: '. BASE_URL .'/index.php');
     }
 endforeach;
 

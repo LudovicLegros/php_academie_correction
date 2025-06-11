@@ -96,33 +96,29 @@ if($value['element'] != NULL){
         <!--Formulaire de modification-->
         <form action="usermodify.php<?= '?id=' . $userId ?>" method="POST">
 
-            <!--ON FAIT UN FOREACH PLUTOT QU'UN WHILE CAR LES DONNEES SONT RECUPEREES EN FETCHALL()-->
-             <?php 
-            //  foreach ($values as $value) : 
-             ?> 
+           
                 <label for="nom">Modifier le nom:</label>
                 <input type="text" value="<?= $value['username'] ?>">
 
                 <label for="role">Modifier le rôle :</label>
-                <select name="role" id="role">
-                    <option value="USER">role USER</option>
-                    <option value="ADMIN">role ADMIN</option>
-                </select>
+                    <select name="role" id="role">
+                        <option value="USER">role USER</option>
+                        <option value="ADMIN">role ADMIN</option>
+                    </select>
+                    
+                    <?php while($type=$requestType->fetch()):?>
+                    <label class="ckinput" for="<?= $type['type']?>"><?= $type['type']?></label>
+                    <input class="ckinput" id="<?= $type['type']?>" type="checkbox" name="element[]" value="<?= $type['id']?>" 
+                    <?php
+                    if(in_array( $type['id'],$element)) {
+                        echo "checked";
+                    }
+                    
+                    ?>
+                    >
+                    
+                    <?php endwhile; ?>
                 
-                <?php while($type=$requestType->fetch()):?>
-                <label for="<?= $type['type']?>"><?= $type['type']?></label>
-                <input id="<?= $type['type']?>" type="checkbox" name="element[]" value="<?= $type['id']?>" 
-                <?php
-                 if(in_array( $type['id'],$element)) {
-                    echo "checked";
-                 }
-                
-                ?>
-                >
-                <?php endwhile; ?>
-             <?php 
-            // endforeach; 
-            ?> 
             <button>Modifier</button>
         </form>
     </main>

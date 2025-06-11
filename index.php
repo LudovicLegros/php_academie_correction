@@ -2,11 +2,14 @@
 include_once('environnement.php');
 ?>
 
-<?php include_once("include/head.php") ?>
+<?php 
+$title = "Academie";
+include_once("include/head.php") 
+?>
 
 <body>
     <?php 
-    $title = "Academie";
+    
     include_once('include/nav.php'); 
     ?>
     <main id="home">
